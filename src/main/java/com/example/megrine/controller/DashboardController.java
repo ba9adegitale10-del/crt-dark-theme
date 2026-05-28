@@ -59,7 +59,6 @@ public class DashboardController {
         try { model.addAttribute("totalEvents", eventRepo.count()); }
         catch (Exception e) { model.addAttribute("totalEvents", 0); }
 
-        // CORRECTION : UPCOMING (pas PLANNED)
         try { model.addAttribute("upcomingEvents", eventRepo.countByStatus(Event.EventStatus.UPCOMING)); }
         catch (Exception e) { model.addAttribute("upcomingEvents", 0); }
 
@@ -69,7 +68,6 @@ public class DashboardController {
         try { model.addAttribute("lowStock", stockRepo.findLowStock()); }
         catch (Exception e) { model.addAttribute("lowStock", Collections.emptyList()); }
 
-        // CORRECTION : UPCOMING (pas PLANNED)
         try {
             model.addAttribute("upcomingEventsList",
                 eventRepo.findByStatusOrderByEventDateAsc(Event.EventStatus.UPCOMING));
