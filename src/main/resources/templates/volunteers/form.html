@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: layout(~{::section#pg},'Bénévole','volunteers')}">
+<section id="pg">
+  <div class="ph">
+    <div><h2 class="ph-title" th:text="${volunteer.id!=null?'Modifier bénévole':'Nouveau bénévole'}">Bénévole</h2></div>
+    <a href="/volunteers" class="btn btn-secondary">← Retour</a>
+  </div>
+  <div class="form-wrap">
+    <form th:action="@{/volunteers/save}" method="post">
+      <input type="hidden" name="id" th:value="${volunteer.id}"/>
+      <div class="form-grid">
+        <div class="form-group"><label>Prénom *</label><input type="text" name="firstName" class="finput" th:value="${volunteer.firstName}" required/></div>
+        <div class="form-group"><label>Nom *</label><input type="text" name="lastName" class="finput" th:value="${volunteer.lastName}" required/></div>
+        <div class="form-group"><label>Email</label><input type="email" name="email" class="finput" th:value="${volunteer.email}"/></div>
+        <div class="form-group"><label>Téléphone</label><input type="text" name="phone" class="finput" th:value="${volunteer.phone}"/></div>
+        <div class="form-group"><label>Groupe sanguin</label>
+          <select name="bloodType" class="finput">
+            <option value="">— Choisir —</option>
+            <option th:each="bt : ${ {'A+','A-','B+','B-','AB+','AB-','O+','O-'} }" th:value="${bt}" th:text="${bt}" th:selected="${volunteer.bloodType==bt}"></option>
+          </select>
+        </div>
+        <div class="form-group"><label>Adresse</label><input type="text" name="address" class="finput" th:value="${volunteer.address}"/></div>
+        <div class="form-group"><label>Date d'adhésion</label><input type="date" name="joinDate" class="finput" th:value="${volunteer.joinDate}"/></div>
+        <div class="form-group"><label>Heures totales</label><input type="number" name="totalHours" class="finput" th:value="${volunteer.totalHours?:0}" min="0"/></div>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label>Disponibilités</label>
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox" name="availability" value="MATIN" th:checked="${volunteer.availability!=null and volunteer.availability.contains('MATIN')}"/> 🌅 Matin</label>
+          <label class="check-item"><input type="checkbox" name="availability" value="APRES-MIDI" th:checked="${volunteer.availability!=null and volunteer.availability.contains('APRES-MIDI')}"/> ☀️ Après-midi</label>
+          <label class="check-item"><input type="checkbox" name="availability" value="SOIREE" th:checked="${volunteer.availability!=null and volunteer.availability.contains('SOIREE')}"/> 🌙 Soirée</label>
+          <label class="check-item"><input type="checkbox" name="availability" value="WEEKEND" th:checked="${volunteer.availability!=null and volunteer.availability.contains('WEEKEND')}"/> 📅 Week-end</label>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label>Statut</label>
+        <div class="check-group">
+          <label class="check-item"><input type="radio" name="active" value="true" th:checked="${volunteer.active}"/> ✅ Actif</label>
+          <label class="check-item"><input type="radio" name="active" value="false" th:checked="${!volunteer.active}"/> ⏸ Inactif</label>
+        </div>
+      </div>
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+      <div class="form-actions">
+        <a href="/volunteers" class="btn btn-secondary">Annuler</a>
+        <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</section>
+</div>
+</body>
+</html>

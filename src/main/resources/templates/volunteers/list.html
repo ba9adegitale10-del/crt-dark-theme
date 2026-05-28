@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: layout(~{::section#pg},'Bénévoles','volunteers')}">
+<section id="pg">
+  <div th:if="${success}" class="flash flash-ok">✓ <span th:text="${success}"></span></div>
+  <div th:if="${error}"   class="flash flash-err">✗ <span th:text="${error}"></span></div>
+  <div class="ph">
+    <div><h2 class="ph-title">Bénévoles</h2><p class="ph-sub" th:text="${volunteers!=null?volunteers.size()+' bénévoles enregistrés':''}"></p></div>
+    <a href="/volunteers/new" class="btn btn-primary">+ Nouveau bénévole</a>
+  </div>
+  <div class="card" style="overflow-x:auto;">
+    <table class="tbl">
+      <thead><tr><th>Bénévole</th><th>Contact</th><th>Groupe sang.</th><th>Heures</th><th>Badge</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr th:if="${volunteers==null or volunteers.empty}">
+          <td colspan="7"><div class="empty"><div class="empty-ico">👥</div><div class="empty-title">Aucun bénévole enregistré</div></div></td>
+        </tr>
+        <tr th:each="v : ${volunteers}">
+          <td>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--red),#600010);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;" th:text="${v.firstName.substring(0,1)}">A</div>
+              <div><div class="cell-name" th:text="${v.firstName+' '+v.lastName}">Nom</div><div class="cell-sub" th:text="${v.address?:'—'}">Adresse</div></div>
+            </div>
+          </td>
+          <td><div class="cell-name" style="font-size:12px;" th:text="${v.email?:'—'}">Email</div><div class="cell-sub" th:text="${v.phone?:'—'}">Tel</div></td>
+          <td><span class="badge b-red" th:text="${v.bloodType?:'—'}">A+</span></td>
+          <td><span style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;" th:text="${v.totalHours?:0}">0</span><span style="font-size:11px;color:var(--text-3);"> h</span></td>
+          <td>
+            <span class="badge" th:if="${v.badges!=null and !v.badges.isEmpty()}"
+                  th:classappend="${v.badges.contains('OR')?'b-amber':(v.badges.contains('ARGENT')?'b-blue':'b-red')}"
+                  th:text="${v.badges}">—</span>
+            <span class="badge b-gray" th:if="${v.badges==null or v.badges.isEmpty()}">Nouveau</span>
+          </td>
+          <td>
+            <span class="badge" th:classappend="${v.active}?'b-green':'b-gray'" th:text="${v.active?'Actif':'Inactif'}">Statut</span>
+          </td>
+          <td>
+            <div class="actions">
+              <a th:href="@{/volunteers/edit/{id}(id=${v.id})}" class="btn btn-secondary btn-sm btn-icon">✏️</a>
+              <a th:href="@{/volunteers/delete/{id}(id=${v.id})}" class="btn btn-danger btn-sm btn-icon" onclick="return confirm('Supprimer ?')">🗑️</a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</div>
+</body>
+</html>

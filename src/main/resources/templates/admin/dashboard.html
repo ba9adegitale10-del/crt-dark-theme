@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: layout(~{::section#pg},'Dashboard Admin','admin')}">
+<section id="pg">
+  <div class="ph"><div><h2 class="ph-title">Dashboard Administrateur</h2><p class="ph-sub">Journal d'activité et statistiques système</p></div></div>
+
+  <!-- Stats globales -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-bottom:20px;">
+    <div class="stat-mini"><div class="stat-mini-val" th:text="${totalUsers?:0}">0</div><div class="stat-mini-lbl">👤 Utilisateurs</div></div>
+    <div class="stat-mini"><div class="stat-mini-val" th:text="${totalVolunteers?:0}">0</div><div class="stat-mini-lbl">👥 Bénévoles</div></div>
+    <div class="stat-mini"><div class="stat-mini-val" th:text="${totalFamilies?:0}">0</div><div class="stat-mini-lbl">🏠 Familles</div></div>
+    <div class="stat-mini"><div class="stat-mini-val" th:text="${totalDonations?:0}">0</div><div class="stat-mini-lbl">❤️ Dons</div></div>
+    <div class="stat-mini"><div class="stat-mini-val" th:text="${totalStock?:0}">0</div><div class="stat-mini-lbl">📦 Stock</div></div>
+    <div class="stat-mini"><div class="stat-mini-val" th:text="${totalEvents?:0}">0</div><div class="stat-mini-lbl">📅 Événements</div></div>
+    <div class="stat-mini" style="background:var(--green-bg);border-color:rgba(16,217,160,0.2);">
+      <div class="stat-mini-val" style="color:var(--green);" th:text="${totalAmount!=null?totalAmount.setScale(0)+' TND':'0 TND'}">0</div>
+      <div class="stat-mini-lbl" style="color:var(--green);">💰 Collectés</div>
+    </div>
+  </div>
+
+  <!-- Stats logs -->
+  <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:20px;">
+    <div class="stat-mini"><div class="stat-mini-val" th:text="${totalLogs?:0}">0</div><div class="stat-mini-lbl">Total actions</div></div>
+    <a href="/admin/logs/filter?type=LOGIN" class="stat-mini" style="text-decoration:none;background:var(--blue-bg);border-color:rgba(77,158,255,0.2);">
+      <div class="stat-mini-val" style="color:var(--blue);" th:text="${loginCount?:0}">0</div><div class="stat-mini-lbl" style="color:var(--blue);">🔑 Connexions</div>
+    </a>
+    <a href="/admin/logs/filter?type=CREATE" class="stat-mini" style="text-decoration:none;background:var(--green-bg);border-color:rgba(16,217,160,0.2);">
+      <div class="stat-mini-val" style="color:var(--green);" th:text="${createCount?:0}">0</div><div class="stat-mini-lbl" style="color:var(--green);">➕ Ajouts</div>
+    </a>
+    <a href="/admin/logs/filter?type=UPDATE" class="stat-mini" style="text-decoration:none;background:var(--amber-bg);border-color:rgba(245,166,35,0.2);">
+      <div class="stat-mini-val" style="color:var(--amber);" th:text="${updateCount?:0}">0</div><div class="stat-mini-lbl" style="color:var(--amber);">✏️ Modifs</div>
+    </a>
+    <a href="/admin/logs/filter?type=DELETE" class="stat-mini" style="text-decoration:none;background:var(--red-pale);border-color:rgba(232,25,44,0.2);">
+      <div class="stat-mini-val" style="color:var(--red-2);" th:text="${deleteCount?:0}">0</div><div class="stat-mini-lbl" style="color:var(--red-2);">🗑️ Supprim.</div>
+    </a>
+    <a href="/admin/logs/filter?type=LOGOUT" class="stat-mini" style="text-decoration:none;">
+      <div class="stat-mini-val" th:text="${logoutCount?:0}">0</div><div class="stat-mini-lbl">🚪 Déconn.</div>
+    </a>
+  </div>
+
+  <!-- Filtres + Journal -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">📋 Journal d'activité</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <a href="/admin/dashboard" class="btn btn-sm" th:classappend="${filterType==null and filterUser==null}?' btn-primary':' btn-secondary'">Tout</a>
+        <a href="/admin/logs/filter?type=LOGIN"  class="btn btn-sm" th:classappend="${filterType=='LOGIN'}?' btn-primary':' btn-secondary'">Connexions</a>
+        <a href="/admin/logs/filter?type=CREATE" class="btn btn-sm" th:classappend="${filterType=='CREATE'}?' btn-primary':' btn-secondary'">Ajouts</a>
+        <a href="/admin/logs/filter?type=UPDATE" class="btn btn-sm" th:classappend="${filterType=='UPDATE'}?' btn-primary':' btn-secondary'">Modifs</a>
+        <a href="/admin/logs/filter?type=DELETE" class="btn btn-sm" th:classappend="${filterType=='DELETE'}?' btn-primary':' btn-secondary'">Supprim.</a>
+        <a href="/admin/logs/filter?type=LOGOUT" class="btn btn-sm btn-secondary">Déconn.</a>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="tbl">
+        <thead><tr><th>Date &amp; Heure</th><th>Utilisateur</th><th>Action</th><th>Type</th><th>Section</th></tr></thead>
+        <tbody>
+          <tr th:if="${logs==null or logs.empty}">
+            <td colspan="5"><div class="empty"><div class="empty-ico">📋</div><div class="empty-title">Aucune activité enregistrée</div></div></td>
+          </tr>
+          <tr th:each="log : ${logs}" th:class="'log-row log-row-'+(${log.actionType!=null?log.actionType.name():'VIEW'})">
+            <td style="font-size:11px;color:var(--text-3);white-space:nowrap;" th:text="${log.createdAt!=null?#temporals.format(log.createdAt,'dd/MM HH:mm'):'—'}">Date</td>
+            <td><span style="font-size:12px;font-weight:600;" th:text="${log.username?:'—'}">User</span></td>
+            <td style="font-size:12px;" th:text="${log.action?:'—'}">Action</td>
+            <td>
+              <span class="badge"
+                th:classappend="${log.actionType!=null and log.actionType.name()=='LOGIN'}?'b-blue':(${log.actionType!=null and log.actionType.name()=='CREATE'}?'b-green':(${log.actionType!=null and log.actionType.name()=='UPDATE'}?'b-amber':(${log.actionType!=null and log.actionType.name()=='DELETE'}?'b-red':'b-gray')))"
+                th:text="${log.actionType?:'-'}">TYPE</span>
+            </td>
+            <td style="font-size:11px;color:var(--text-3);" th:text="${log.entityType?:'—'}">Section</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+</div>
+</body>
+</html>

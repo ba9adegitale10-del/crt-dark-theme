@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: layout(~{::section#pg},'Familles','families')}">
+<section id="pg">
+  <div th:if="${success}" class="flash flash-ok">✓ <span th:text="${success}"></span></div>
+  <div class="ph">
+    <div><h2 class="ph-title">Familles</h2><p class="ph-sub" th:text="${families!=null?families.size()+' familles enregistrées':''}"></p></div>
+    <a href="/families/new" class="btn btn-primary">+ Nouvelle famille</a>
+  </div>
+  <div class="cat-pills">
+    <a href="/families" class="cat-pill active">Toutes</a>
+    <a href="/families?cat=NEEDY" class="cat-pill">🔴 Nécessiteuses</a>
+    <a href="/families?cat=ORPHAN" class="cat-pill">💙 Orphelins</a>
+    <a href="/families?cat=DISABLED" class="cat-pill">♿ Handicap</a>
+    <a href="/families?cat=ELDERLY" class="cat-pill">👴 Personnes âgées</a>
+  </div>
+  <div class="card" style="overflow-x:auto;">
+    <table class="tbl">
+      <thead><tr><th>Chef de famille</th><th>Contact</th><th>Membres</th><th>Catégorie</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr th:if="${families==null or families.empty}">
+          <td colspan="6"><div class="empty"><div class="empty-ico">🏠</div><div class="empty-title">Aucune famille enregistrée</div></div></td>
+        </tr>
+        <tr th:each="f : ${families}">
+          <td><div class="cell-name" th:text="${f.headName}">Nom</div><div class="cell-sub" th:text="${f.address?:'—'}">Adresse</div></td>
+          <td><div style="font-size:12px;" th:text="${f.phone?:'—'}">Tél</div></td>
+          <td><span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700;" th:text="${f.membersCount?:0}">0</span><span style="font-size:11px;color:var(--text-3);"> pers.</span></td>
+          <td>
+            <span class="badge"
+              th:classappend="${f.category!=null and f.category.name()=='NEEDY'}?'b-red':(${f.category!=null and f.category.name()=='ORPHAN'}?'b-blue':(${f.category!=null and f.category.name()=='DISABLED'}?'b-purple':'b-amber'))"
+              th:text="${f.category}">Cat</span>
+          </td>
+          <td><span class="badge" th:classappend="${f.status!=null and f.status.name()=='ACTIVE'}?'b-green':'b-gray'" th:text="${f.status}">Statut</span></td>
+          <td>
+            <div class="actions">
+              <a th:href="@{/families/{id}(id=${f.id})}" class="btn btn-secondary btn-sm btn-icon" title="Voir">👁️</a>
+              <a th:href="@{/families/edit/{id}(id=${f.id})}" class="btn btn-secondary btn-sm btn-icon">✏️</a>
+              <a th:href="@{/families/delete/{id}(id=${f.id})}" class="btn btn-danger btn-sm btn-icon" onclick="return confirm('Supprimer ?')">🗑️</a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</div>
+</body>
+</html>

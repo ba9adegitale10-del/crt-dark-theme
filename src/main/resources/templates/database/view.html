@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div th:replace="~{fragments/layout :: layout(~{::section#pg},'Base de données','database')}">
+<section id="pg">
+  <div class="ph"><div><h2 class="ph-title">Base de données</h2><p class="ph-sub">Vue en lecture seule des tables Supabase</p></div></div>
+  <div class="db-table-selector">
+    <a href="/database?table=users" class="db-table-btn" th:classappend="${selectedTable=='users'}?' active':''">👤 Utilisateurs</a>
+    <a href="/database?table=volunteers" class="db-table-btn" th:classappend="${selectedTable=='volunteers'}?' active':''">👥 Bénévoles</a>
+    <a href="/database?table=families" class="db-table-btn" th:classappend="${selectedTable=='families'}?' active':''">🏠 Familles</a>
+    <a href="/database?table=donations" class="db-table-btn" th:classappend="${selectedTable=='donations'}?' active':''">❤️ Dons</a>
+    <a href="/database?table=stock_items" class="db-table-btn" th:classappend="${selectedTable=='stock_items'}?' active':''">📦 Stock</a>
+    <a href="/database?table=events" class="db-table-btn" th:classappend="${selectedTable=='events'}?' active':''">📅 Événements</a>
+    <a href="/database?table=activity_logs" class="db-table-btn" th:classappend="${selectedTable=='activity_logs'}?' active':''">📋 Logs</a>
+  </div>
+  <div class="card" style="overflow-x:auto;" th:if="${rows!=null}">
+    <div class="card-head"><div class="card-title" th:text="'Table: '+${selectedTable?:'—'}">Table</div><span style="font-size:12px;color:var(--text-3);" th:text="${rows.size()}+' lignes'">0</span></div>
+    <table class="tbl" th:if="${!rows.empty}">
+      <thead>
+        <tr><th th:each="col : ${columns}" th:text="${col}">Col</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="row : ${rows}">
+          <td th:each="col : ${columns}" style="font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" th:text="${row[col]}">—</td>
+        </tr>
+      </tbody>
+    </table>
+    <div th:if="${rows.empty}" class="empty"><div class="empty-ico">📋</div><div class="empty-title">Table vide</div></div>
+  </div>
+  <div class="card" th:if="${rows==null}">
+    <div class="empty"><div class="empty-ico">🗄️</div><div class="empty-title">Sélectionnez une table ci-dessus</div></div>
+  </div>
+</section>
+</div>
+</body>
+</html>
