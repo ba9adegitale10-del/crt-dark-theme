@@ -31,8 +31,8 @@
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
           <div class="cell-name" style="font-size:15px;" th:text="${ev.title}">Titre</div>
           <span class="badge"
-            th:classappend="${ev.status!=null and ev.status.name()=='PLANNED'}?'b-blue':(${ev.status!=null and ev.status.name()=='ONGOING'}?'b-green':'b-gray')"
-            th:text="${ev.status!=null?(ev.status.name()=='PLANNED'?'Planifié':(ev.status.name()=='ONGOING'?'En cours':'Terminé')):'?'}">S</span>
+            th:classappend="${ev.status!=null and ev.status.name()=='UPCOMING'}?'b-blue':(${ev.status!=null and ev.status.name()=='ONGOING'}?'b-green':'b-gray')"
+            th:text="${ev.status!=null?(ev.status.name()=='UPCOMING'?'Planifié':(ev.status.name()=='ONGOING'?'En cours':'Terminé')):'?'}">S</span>
         </div>
         <div class="cell-sub" style="margin-top:4px;" th:text="${ev.location!=null?'📍 '+ev.location:''}"></div>
         <div class="cell-sub" th:text="${ev.responsibleName!=null?'👤 Resp: '+ev.responsibleName:''}"></div>

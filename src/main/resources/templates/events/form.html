@@ -23,7 +23,7 @@
         <div class="form-group"><label>Capacité max.</label><input type="number" name="maxParticipants" class="finput" th:value="${event.maxParticipants}" min="0"/></div>
         <div class="form-group"><label>Statut</label>
           <select name="status" class="finput">
-            <option value="PLANNED" th:selected="${event.status==null or event.status.name()=='PLANNED'}">📅 Planifié</option>
+            <option value="UPCOMING" th:selected="${event.status==null or event.status.name()=='UPCOMING'}">📅 Planifié</option>
             <option value="ONGOING" th:selected="${event.status!=null and event.status.name()=='ONGOING'}">🟢 En cours</option>
             <option value="COMPLETED" th:selected="${event.status!=null and event.status.name()=='COMPLETED'}">✅ Terminé</option>
             <option value="CANCELLED" th:selected="${event.status!=null and event.status.name()=='CANCELLED'}">❌ Annulé</option>

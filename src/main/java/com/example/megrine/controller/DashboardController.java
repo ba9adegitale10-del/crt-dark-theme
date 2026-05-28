@@ -24,7 +24,6 @@ public class DashboardController {
     public String dashboard(Model model,
             org.springframework.security.core.Authentication auth) {
 
-        // Rediriger les membres vers Mon Espace
         if (auth != null && auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_MEMBER"))
             && auth.getAuthorities().stream()
@@ -34,7 +33,6 @@ public class DashboardController {
             return "redirect:/member";
         }
 
-        // Chaque stat protegee contre les erreurs
         try { model.addAttribute("totalVolunteers", volunteerRepo.count()); }
         catch (Exception e) { model.addAttribute("totalVolunteers", 0); }
 
@@ -61,19 +59,20 @@ public class DashboardController {
         try { model.addAttribute("totalEvents", eventRepo.count()); }
         catch (Exception e) { model.addAttribute("totalEvents", 0); }
 
-        try { model.addAttribute("upcomingEvents", eventRepo.countByStatus(Event.EventStatus.PLANNED)); }
+        // CORRECTION : UPCOMING (pas PLANNED)
+        try { model.addAttribute("upcomingEvents", eventRepo.countByStatus(Event.EventStatus.UPCOMING)); }
         catch (Exception e) { model.addAttribute("upcomingEvents", 0); }
 
         try { model.addAttribute("totalUsers", userRepo.count()); }
         catch (Exception e) { model.addAttribute("totalUsers", 0); }
 
-        // Listes
         try { model.addAttribute("lowStock", stockRepo.findLowStock()); }
         catch (Exception e) { model.addAttribute("lowStock", Collections.emptyList()); }
 
+        // CORRECTION : UPCOMING (pas PLANNED)
         try {
             model.addAttribute("upcomingEventsList",
-                eventRepo.findByStatusOrderByEventDateAsc(Event.EventStatus.PLANNED));
+                eventRepo.findByStatusOrderByEventDateAsc(Event.EventStatus.UPCOMING));
         } catch (Exception e) { model.addAttribute("upcomingEventsList", Collections.emptyList()); }
 
         try {

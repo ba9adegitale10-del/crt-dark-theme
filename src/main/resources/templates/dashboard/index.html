@@ -201,8 +201,8 @@
             <div class="cell-sub" th:text="${ev.responsibleName!=null?'Resp. '+ev.responsibleName:''}"></div>
           </div>
           <span class="badge"
-                th:classappend="${ev.status.name()=='PLANNED'?'b-blue':(ev.status.name()=='ONGOING'?'b-green':'b-gray')}"
-                th:text="${ev.status.name()=='PLANNED'?'Planifié':(ev.status.name()=='ONGOING'?'En cours':'Terminé')}">
+                th:classappend="${ev.status.name()=='UPCOMING'?'b-blue':(ev.status.name()=='ONGOING'?'b-green':'b-gray')}"
+                th:text="${ev.status.name()=='UPCOMING'?'Planifié':(ev.status.name()=='ONGOING'?'En cours':'Terminé')}">
           </span>
         </div>
       </div>
